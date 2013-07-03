@@ -1,30 +1,20 @@
 /**
  * @todo add delete button
  * @todo add user selector
- * @todo make frame resize based on contents, particularl when revealing
  * @todo make dragging snap to upper and lower edge of display
 */
 
 package gui;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.LayoutManager;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import javax.swing.event.MouseInputAdapter;
-import java.awt.event.MouseMotionListener;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import java.net.URL;
+import java.util.HashMap;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,13 +22,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import gui.COinJActions;
 import gui.BackgroundPanel;
-//import gui.DraggableFrame;
 
 /**
  * A {@link javax.swing.JFrame} with a background pattern, a reveal button for 
@@ -49,19 +38,18 @@ import gui.BackgroundPanel;
  * that would more properly should be part of the client.
  */
 public class ButtonBar extends JFrame {
-    static final private String PREVIOUS = "previous";
-    static final private String UP = "up";
-    static final private String NEXT = "next";
     static final private String SOMETHING_ELSE = "other";
 
     JPanel panel;
+    HashMap<String, Action> actionMap;
     
     /**
      * Construct a ButtonBar with a collection of default buttons and actions.
      * There should be another constructor that supplies the name of the
      * background pattern.
      */
-    public ButtonBar() {
+    public ButtonBar(HashMap<String, Action> actionMap) {
+	this.actionMap = actionMap;
         panel = new BackgroundPanel(new BorderLayout(), "SunstoneFullBack");
         //Create the buttonbar.
         JToolBar buttonbar = new JToolBar();
@@ -80,108 +68,6 @@ public class ButtonBar extends JFrame {
         setPreferredSize(buttonBarSize);
 	panel.add(buttonbar, BorderLayout.PAGE_START);
         add(panel);
-    }
-
-    /**
-     * Make an {@code ImageIcon} available through the resources of 
-     * {@code ButtonBar}.
-     */
-    // TODO: Make the error-handling throw an exception.
-    protected static ImageIcon makeIcon(String imageName, String altText) {
-        //Look for the image.
-	// TODO: fix to use system specific file seperator, not "/"?
-        String imgLocation = "images/" + imageName + ".png";
-        URL imageURL = ButtonBar.class.getResource(imgLocation);
-	if (imageURL == null) {
-	    System.err.println("couldn't find: " + imgLocation);
-	}
-	return new ImageIcon(imageURL, altText);
-    }
-
-    /** Convenience super class for actions attached to ButtonBar */
-    protected abstract static class ToolbarActions extends AbstractAction {
-	public ToolbarActions(String altText, String name, String iconName) {
-	    putValue(SHORT_DESCRIPTION, altText);
-	    putValue(NAME, name);
-	    putValue(LARGE_ICON_KEY, makeIcon(iconName, altText));
-	}
-	/** Default (stupid) action.  This should be overridden */
-	public void actionPerformed(ActionEvent ae) {
-	    System.out.println("actionPerformed: " + 
-			       getValue(SHORT_DESCRIPTION));
-	}
-    }
-
-    protected static class CreateNewAddressAction extends ToolbarActions {
-	public CreateNewAddressAction() {
-	    super("Create New Address", "New Address", "NewAddress");
-	}
-    }
-    
-    protected static class AddressListAction extends ToolbarActions {
-	public AddressListAction() {
-	    super("Show Address List", "Addresses", "Addresses");
-	}
-    }
-
-    protected static class CreateNewToDoAction extends ToolbarActions {
-	public CreateNewToDoAction() {
-	    super("Create New To Do", "New To Do", "New To Do");
-	}
-    }
-    
-    protected static class ToDoListAction extends ToolbarActions {
-	public ToDoListAction() {
-	    super("Show To Do List", "To Dos", "To Dos");
-	}
-    }
-
-    protected static class CreateNewMemoAction extends ToolbarActions {
-	public CreateNewMemoAction() {
-	    super("Create New Memo", "New Memo", "New Memo");
-	}
-    }
-
-    protected static class MemosAction extends ToolbarActions {
-        public MemosAction() {
-            super("Show Memo List", "Memos", "Memos");
-        }
-    }
-    
-    protected static class CreateNewEventAction extends ToolbarActions {
-	public CreateNewEventAction() {
-	    super("Create New Event", "New Event", "New Event");
-	}
-    }
-
-    protected static class GotoAction extends ToolbarActions {
-	public GotoAction() {
-	    super("Go To", "Go To", "Go To");
-	}
-    }
-
-    protected static class GotoTodayAction extends ToolbarActions {
-	public GotoTodayAction() {
-	    super("Today", "Today", "Today");
-	}
-    }
-
-    protected static class DatebookAction extends ToolbarActions {
-	public DatebookAction() {
-	    super("Date Book", "Date Book", "Date Book");
-	}
-    }
-
-    protected static class PrintAction extends ToolbarActions {
-	public PrintAction() {
-	    super("Print", "Print", "Print");
-	}
-    }
-
-    protected static class FindAction extends ToolbarActions {
-	public FindAction() {
-	    super("Find", "Find", "Find");
-	}
     }
 
     /** ButtonLabelItemListener hides/reveals button label text */
@@ -219,8 +105,8 @@ public class ButtonBar extends JFrame {
 					   JToolBar toolbar) {
 	// TODO: Use larger icons for reveal triangle. Are there
 	// standard Swing icons for reveal/hide triangles?
-	ImageIcon triRight = makeIcon("triRight", "hide labels");
-	ImageIcon triDown = makeIcon("triDown", "show labels");
+	ImageIcon triRight = COinJActions.makeIcon("triRight", "hide labels");
+	ImageIcon triDown = COinJActions.makeIcon("triDown", "show labels");
 
 	JCheckBox revealBox = new JCheckBox();
         revealBox.setIcon(triDown);
@@ -242,40 +128,40 @@ public class ButtonBar extends JFrame {
         JButton button = null;
 
 	// New Address
-	JButton createAddrButton = makeButton(new CreateNewAddressAction());
+	JButton createAddrButton = makeButton(actionMap.get("newAddress"));
 	
 	// Addresses
-	JButton addresses = makeButton(new AddressListAction());
+	JButton addresses = makeButton(actionMap.get("addressList"));
 	
 	// New To Do
-	JButton createToDoButton = makeButton(new CreateNewToDoAction());
+	JButton createToDoButton = makeButton(actionMap.get("newToDo"));
 	
 	// To Dos
-	JButton toDos = makeButton(new ToDoListAction());
+	JButton toDos = makeButton(actionMap.get("toDoList"));
 	
 	// New Memo
-	JButton createNewMemo = makeButton(new CreateNewMemoAction());
+	JButton createNewMemo = makeButton(actionMap.get("newMemo"));
 	
 	// Memos
-	JButton memos = makeButton(new MemosAction());
+	JButton memos = makeButton(actionMap.get("memoList"));
 	
 	// New Event
-	JButton createEventButton = makeButton(new CreateNewEventAction());
+	JButton createEventButton = makeButton(actionMap.get("newEvent"));
 
 	// Go To
-	JButton gotoButton = makeButton(new GotoAction());
+	JButton gotoButton = makeButton(actionMap.get("goTo"));
 	
 	// Go To Today
-	JButton gotoTodayButton = makeButton(new GotoTodayAction());
+	JButton gotoTodayButton = makeButton(actionMap.get("goToToday"));
 
 	// DateBook
-	JButton datebookButton = makeButton(new DatebookAction());
+	JButton datebookButton = makeButton(actionMap.get("dateBook"));
 
 	// Print
-	JButton printButton = makeButton(new PrintAction());
+	JButton printButton = makeButton(actionMap.get("print"));
 
 	// Find
-	JButton findButton = makeButton(new FindAction());
+	JButton findButton = makeButton(actionMap.get("find"));
 
 	// TODO: Extract the code for dealing with reveal/unreveal into another
 	// method.
@@ -307,7 +193,6 @@ public class ButtonBar extends JFrame {
         button = new JButton("Another button");
         button.setActionCommand(SOMETHING_ELSE);
         button.setToolTipText("Something else");
-        //button.addActionListener(this);
         toolBar.add(button);
 
     }
@@ -333,21 +218,13 @@ public class ButtonBar extends JFrame {
     }
 
     /**
-     * A placeholder method to demonstrate actions.
-     */
-    public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
-	System.out.println(cmd);
-    }
-    
-    /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
      * event dispatch thread.
      */
-    private static void createAndShowGUI() {
+    static private void createAndShowGUI() {
         //Create and set up the window.
-	ButtonBar frame = new ButtonBar();
+	ButtonBar frame = new ButtonBar(MenuBar.createActions());
 	
 	// TODO: this should probably be moved to ButtonBar()
 	frame.setLocation(0,25);
