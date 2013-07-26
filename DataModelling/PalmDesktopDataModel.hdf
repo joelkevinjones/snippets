@@ -1,0 +1,119 @@
+DataModel {
+  Classes {
+    1 { 
+        Name = Memo
+        LCname = memo
+        ASaccessor = memo
+        Properties {
+          1 {
+              Name = title
+              ASaccessor = title
+              Type = text
+          }
+          2 {
+            Name = contents
+            ASaccessor = contents of contents
+            Type = text
+          }
+          3 {
+              Name = creationDate
+              ASaccessor = creation date
+              Type = date
+          }
+          4 {
+              Name = modificationDate
+              ASaccessor = modification date
+              Type = date
+          }
+       }
+    }
+    2 {
+      Name = ToDo
+      LCname = todo
+      ASaccessor = to do
+      Properties {
+        1 {
+          Name = title
+          ASaccessor = title
+          Type = text
+        }
+        2 {
+          Name = dueDate
+          ASaccessor = due date
+          Type = date
+        }
+        3 {
+          Name = completionDate
+          ASaccessor = completion date
+          Type = date
+          AllowNull = true
+        }
+        4 {
+          Name = priority
+          ASaccessor = priority
+          Type = text
+        }
+        5 {
+          Name = carryOver
+          ASaccessor = carry over
+          Type = boolean
+        }
+      }
+    }
+    3 {
+      Name = Event
+      LCname = event
+      ASaccessor = event
+      Properties {
+        1 {
+          Name = title
+          ASaccessor = title
+          Type = text
+        }
+        2 {
+          Name = startTime
+          ASaccessor = start time
+          Type = date
+        }
+        3 {
+          Name = endTime
+          ASaccessor = end time
+          Type = date
+        }
+        4 {
+          Name = duration
+          ASaccessor = duration
+          Type = int
+        }
+        5 {
+          Name = allDayEvent
+          ASaccessor = all day event
+          Type = boolean
+        }
+        6 {
+          Name = alarm
+          ASaccessor = alarm
+          Type = integer
+          AllowNull = true
+        }
+      }
+    }
+    4 {
+      Name = Address
+      LCname = address
+      ASaccessor = address
+      Properties {
+        1 {
+          Name = firstName
+          ASaccessor = first name
+          Type = text
+        }
+        2 {
+          Name = lastName
+          ASaccessor = last name
+          Type = text
+        }
+      }
+    }
+  }
+}
