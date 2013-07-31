@@ -4,6 +4,7 @@ DataModel {
         Name = Memo
         LCname = memo
         ASaccessor = memo
+        ASaccessorPlural = memos
         Properties {
           1 {
               Name = title
@@ -31,6 +32,7 @@ DataModel {
       Name = ToDo
       LCname = todo
       ASaccessor = to do
+      ASaccessorPlural = to dos
       Properties {
         1 {
           Name = title
@@ -64,6 +66,7 @@ DataModel {
       Name = Event
       LCname = event
       ASaccessor = event
+      ASaccessorPlural = events
       Properties {
         1 {
           Name = title
@@ -99,9 +102,27 @@ DataModel {
       }
     }
     4 {
+        Name = PostalAddress
+        LCname = postalAddress
+        DependentType = true
+        Properties {
+          1 {
+            Name = streetAddressOne
+            ASaccessor = street address one
+            Type = text
+          }
+          2 {
+            Name = streetAddressTwo
+            ASaccessor = street address two
+            Type = text
+          }
+        }
+    }
+    5 {
       Name = Address
       LCname = address
       ASaccessor = address
+      ASaccessorPlural = addresses
       Properties {
         1 {
           Name = firstName
@@ -112,6 +133,14 @@ DataModel {
           Name = lastName
           ASaccessor = last name
           Type = text
+        }
+      }
+      DummyProperties {
+        3 {
+          Name = addressOne
+          ASaccessor = address one
+          Type = record
+          RecordType = PostalAddress
         }
       }
     }

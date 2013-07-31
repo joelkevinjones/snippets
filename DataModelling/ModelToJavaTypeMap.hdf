@@ -1,0 +1,4 @@
+dataModelToJava {
+  text = String
+  date = Date
+}
