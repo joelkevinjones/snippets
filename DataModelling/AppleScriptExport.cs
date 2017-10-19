@@ -5,27 +5,27 @@
 global outFD
 set outFD to -1
 
-<?cs # set some parameters for testing 
+<?cs # set some parameters for testing
 ?><?cs set:idxLimit = 5 ?>
-<?cs # count of  var:cls.LCname s 
+<?cs # count of  var:cls.LCname s
 ?>
-<?cs # Macros for dependent types 
-?><?cs 
+<?cs # Macros for dependent types
+?><?cs
 def:genDepTypeWriter(depType) ?>
 on write<?cs var:depType.Name ?>(outFD, the<?cs var:depType.Name?>)
   tell application "Palm Desktop"
   end tell
 end write<?cs var:depType.Name?>
-<?cs /def 
-?><?cs 
+<?cs /def
+?><?cs
 # Macros for independent types
-?><?cs 
+?><?cs
 def:genIndyTypeWriter(cls) ?>
 on write<?cs var:cls.Name ?>(outFD, the<?cs var:cls.Name?>)
   advanceProgressBar(1) of me
   tell application "Palm Desktop"
     writeBeginEntry(outFD, "<?cs var:cls.LCname ?>", the<?cs var:cls.Name ?>) of me<?cs each: prp=cls.Properties?>
-    <?cs if:prp.AllowNull ?>if <?cs var:prp.ASaccessor ?> of the<?cs var:cls.Name ?> is not equal to missing value then 
+    <?cs if:prp.AllowNull ?>if <?cs var:prp.ASaccessor ?> of the<?cs var:cls.Name ?> is not equal to missing value then
       writeTagged(outFD, "<?cs var:prp.Name ?>", <?cs var: prp.ASaccessor ?> of the<?cs var:cls.Name ?>) of me
     end if<?cs else ?>
     writeTagged(outFD, "<?cs var:prp.Name ?>", <?cs var: prp.ASaccessor ?> of the<?cs var:cls.Name ?>) of me<?cs /if ?><?cs /each ?>
@@ -83,22 +83,22 @@ on getItemCount()
         return <?cs each:cls=DataModel.Classes ?><?cs if:cls.DependentType ?><?cs else ?><?cs var:cls.LCname ?>Count<?cs /if ?><?cs set: idx = idx + #1?><?cs if:idx != numClasses ?> + <?cs /if ?><?cs /each ?>
 	end tell
 end getItemCount
-<?cs # Generate handlers that are data dependent and there is one instance per 
+<?cs # Generate handlers that are data dependent and there is one instance per
      # class. ?>
 <?cs # TODO: handle inheritance of classes.  In the instance of Palm Desktop, the
      # common super class of Memo, ToDo, Event, and Address, Entry is handled in
-     # the original ExportToXML.scpt with the routine "writeBeginEntry" which 
+     # the original ExportToXML.scpt with the routine "writeBeginEntry" which
      # forms and writes a opening tag based on the subclass of entry, then writes
      # tag data for the primary and secondary categories, the private property, and
      # attachments. ?>
-<?cs each: cls=DataModel.Classes ?><?cs 
+<?cs each: cls=DataModel.Classes ?><?cs
   if:cls.DependentType ?><?cs
     call genDepTypeWriter(cls) ?><?cs
   else ?><?cs
-    call genIndyTypeWriter(cls) ?><?cs 
+    call genIndyTypeWriter(cls) ?><?cs
   /if ?><?cs /each ?>
 
-<?cs # Main program 
+<?cs # Main program
 ?>on main()
   try
     tell application "Palm Desktop"

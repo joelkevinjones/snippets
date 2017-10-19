@@ -13,12 +13,13 @@ import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
 /**
- * Convenience super class for actions attached to ButtonBar.
+ * Convenience super class for actions attached to ButtonBar, MenuBar,.
  */
 class COinJActions extends AbstractAction {
-    static int menuShortCutKeyMask = 
+    static int menuShortCutKeyMask =
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-    public COinJActions(String altText, String name, String iconName, 
+
+    public COinJActions(String altText, String name, String iconName,
                           String menuName, KeyStroke keyStroke) {
         putValue(SHORT_DESCRIPTION, altText);
         putValue(NAME, name);
@@ -37,7 +38,7 @@ class COinJActions extends AbstractAction {
     }
 
     /**
-     * Make an {@code ImageIcon} available through the resources of 
+     * Make an {@code ImageIcon} available through the resources of
      * {@code COinJActions}.
      */
     // TODO: Make the error-handling throw an exception.
@@ -55,42 +56,42 @@ class COinJActions extends AbstractAction {
 
 class CreateNewAddressAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.ALT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_A, mask, true);
-    
+
     public CreateNewAddressAction() {
-        super("Create New Address", "New Address", "NewAddress", "Address...", 
+        super("Create New Address", "New Address", "NewAddress", "Address...",
               keyStroke);
     }
 }
-    
+
 class AddressListAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.SHIFT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_A, mask, true);
-    
+
     public AddressListAction() {
-        super("Show Address List", "Addresses", "Addresses", "Address List", 
+        super("Show Address List", "Addresses", "Addresses", "Address List",
               keyStroke);
     }
 }
 
 class CreateNewToDoAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.ALT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_T, mask, true);
-    
+
     public CreateNewToDoAction() {
         super("Create New To Do", "New To Do", "New To Do", "To Do...",
               keyStroke);
     }
 }
-    
+
 class ToDoListAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.SHIFT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_T, mask, true);
-    
+
     public ToDoListAction() {
         super("Show To Do List", "To Dos", "To Dos", "To Do List", keyStroke);
     }
@@ -98,9 +99,9 @@ class ToDoListAction extends COinJActions {
 
 class CreateNewMemoAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.ALT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_N, mask, true);
-    
+
     public CreateNewMemoAction() {
         super("Create New Memo", "New Memo", "New Memo", "Memo...", keyStroke);
     }
@@ -108,19 +109,19 @@ class CreateNewMemoAction extends COinJActions {
 
 class MemosAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.SHIFT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_N, mask, true);
-    
+
     public MemosAction() {
         super("Show Memo List", "Memos", "Memos", "Memo List", keyStroke);
     }
 }
-    
+
 class CreateNewEventAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.ALT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_E, mask, true);
-    
+
     public CreateNewEventAction() {
         super("Create New Event", "New Event", "New Event", "Event...",
                keyStroke);
@@ -129,9 +130,9 @@ class CreateNewEventAction extends COinJActions {
 
 class CreateNewUntimedEventAction extends COinJActions {
     static int mask = menuShortCutKeyMask | InputEvent.ALT_DOWN_MASK;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_U, mask, true);
-    
+
     public CreateNewUntimedEventAction() {
         super("Create New Event", "New Event", null, "Untimed Event...",
               keyStroke);
@@ -140,9 +141,9 @@ class CreateNewUntimedEventAction extends COinJActions {
 
 class GotoAction extends COinJActions {
     static int mask = menuShortCutKeyMask;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_R, mask, true);
-    
+
     public GotoAction() {
         super("Go To", "Go To", "Go To", "Go To Date...", keyStroke);
     }
@@ -150,9 +151,9 @@ class GotoAction extends COinJActions {
 
 class GotoTodayAction extends COinJActions {
     static int mask = menuShortCutKeyMask;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_T, mask, true);
-    
+
     public GotoTodayAction() {
         super("Today", "Today", "Today", "Today", keyStroke);
     }
@@ -166,9 +167,9 @@ class DatebookAction extends COinJActions {
 
 class PrintAction extends COinJActions {
     static int mask = menuShortCutKeyMask;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_P, mask, true);
-    
+
     public PrintAction() {
         super("Print", "Print", "Print", "Print...", keyStroke);
     }
@@ -176,11 +177,41 @@ class PrintAction extends COinJActions {
 
 class FindAction extends COinJActions {
     static int mask = menuShortCutKeyMask;
-    static KeyStroke keyStroke = 
+    static KeyStroke keyStroke =
         KeyStroke.getKeyStroke(KeyEvent.VK_F, mask, true);
-    
+
     public FindAction() {
         super("Find", "Find", "Find", "Find...", keyStroke);
+    }
+}
+
+class AttachItemAction extends COinJActions {
+    static int mask = menuShortCutKeyMask;
+    static KeyStroke keyStroke =
+        KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, mask, true);
+
+    public AttachItemAction() {
+        super("", "", "attach", "", keyStroke);
+    }
+}
+
+class NextItemAction extends COinJActions {
+    static int mask = menuShortCutKeyMask;
+    static KeyStroke keyStroke =
+        KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, mask, true);
+
+    public NextItemAction() {
+        super("", "", "SunStoneRightArrow", "", keyStroke);
+    }
+}
+
+class PrevItemAction extends COinJActions {
+    static int mask = menuShortCutKeyMask;
+    static KeyStroke keyStroke =
+        KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, mask, true);
+
+    public PrevItemAction() {
+        super("", "", "SunStoneLeftArrow", "", keyStroke);
     }
 }
 

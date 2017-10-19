@@ -1,6 +1,29 @@
 DataModel {
   Classes {
-    1 { 
+    0 {
+        Name = Category
+        LCname = category
+        ASaccessor = category
+        ASaccessorPlural = categories
+        Properties {
+          1 {
+              Name = name
+              ASaccessor = name
+              Type = text
+          }
+          2 {
+              Name = id
+               ASaccessor = id
+              Type = text
+         }
+          3 {
+              Name = colorIndex
+              ASaccessor = color index
+              Type = int
+          }
+        }
+    }
+    1 {
         Name = Memo
         LCname = memo
         ASaccessor = memo
