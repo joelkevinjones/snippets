@@ -1,0 +1,169 @@
+# Given a file name, extract all resources in that application into more
+# modern, Java friendly, individual files.
+# Currently handles: ICON, ICN#, ics4, ics8, icl4, icl8
+
+# Palm Desktop uses the following, obrtained by running the following command
+# after running extract_rsrc.pl:
+# for f in tmp28930/*.rsrc; do   basename "${f}" | awk '{print substr($0,1,4)}'; done | sort | uniq -c | sort -n
+# BBLA BNDL CNTL CURS FMNU FREF ICN# ICON NAVT PICT POrg QUIL SICN SIZE STR#
+# TREC WDPS acur carb cfrg cicn icl4 icl8 icm# icm4 icm8 icns ics# ics4 ics8
+# open scpt snd  vers
+
+RESPRESSODIR=${HOME}/gitRepos/ResCafe1.4.1
+RESPRESSOBIN=${RESPRESSODIR}/ResPresso.sh
+export CLASSPATH=${CLASSPATH}${CLASSPATH+:}${RESPRESSODIR}
+
+# FIXME: extend PATH based on $0 directory?
+PATH=${HOME}/gitRepos/githubSnippets/DataModelling:$PATH
+PATH=${RESPRESSOBIN}:$PATH
+function exitMsg()
+{
+  echo $1
+  exit 1
+}
+
+rsrcFile=$1
+# make a tmp directory to dump the files to
+tmpdir=tmp$$
+mkdir $tmpdir && cd $tmpdir
+
+# extract each resource as a raw resource into the current directory
+#~/gitRepos/classic-mac-utils/extract_rsrc.pl < $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop/..namedfork/rsrc
+~/gitRepos/classic-mac-utils/extract_rsrc.pl < "${rsrcFile}/..namedfork/rsrc" ||
+exitMsg "extract_rsrc.pl failed"
+
+# Make some necessary pngs to use as CLUTs (color lookup tables)
+drawColorMap16 clut16.png
+drawColorMap256 clut256.png
+
+# Convert each resource we know how to handle into a results directory
+mkdir results
+
+# Can handle ICON, ICN#, ics{#4,8},icl{4,8}
+function extrICON() {
+  for f in `ls ICON*.rsrc`
+  do
+      # TODO: choose dd without status option if gdd doesn't exist
+      gdd status=none bs=1 count=128 if=${f} | xxd -e - | xxd -r - |
+      convert -size 32x32 MONO:- results/${f}.png
+  done
+}
+
+function extrICNlb() {
+  for f in `ls ICN#*.rsrc`
+  do
+      xxd -e ${f} | xxd -r - | convert -size 32x32 MONO:- -flop results/${f}.png
+  done
+}
+
+function extrics4() {
+  for f in `ls ics4*.rsrc`
+  do
+      convert -size 16x16 -depth 4 GRAY:${f} -interpolate Integer clut16.png -clut results/${f}.png
+  done
+}
+
+function extrics8() {
+  for f in `ls ics8*.rsrc`
+  do
+    convert -size 16x16 -depth 8 GRAY:${f} -interpolate Integer clut256.png -clut results/${f}.png
+  done
+}
+
+function extricl4() {
+  for f in `ls icl4*.rsrc`
+  do
+      convert -size 32x32 -depth 4 GRAY:${f} -interpolate Integer clut16.png -clut results/${f}.png
+  done
+}
+
+function extricl8() {
+  for f in `ls icl8*.rsrc`
+  do
+    convert -size 32x32 -depth 8 GRAY:${f} -interpolate Integer clut256.png -clut results/${f}.png
+  done
+}
+
+# cicn
+function extrcicn() {
+  # Use ResPresso to handle cicn, as format is too complicated to use
+  # a combination of xxd, dd, and ImageMagick on.
+
+  # In gitRepos/ResCafe1.4.1
+  # Download http://download.oracle.com/otn-pub/java/jai/1.1.2_01-fcs/jai-1_1_2_01-lib-linux-i586.tar.gz?AuthParam=1510162181_fa0be94538b962646d5964b649fe0d09
+
+  # Edit ResPresso.sh to point to downloaded .jar files
+
+  # Get a copy of input's resource fork as a normal file
+  outRsrc=`basename "${rsrcFile}"`.rsrc
+  echo cp ${rsrcFile}/..namedfork/rsrc "${outRsrc}"
+  cp "${rsrcFile}/..namedfork/rsrc" "${outRsrc}"
+
+  # Extract all cicn resources
+  mkdir resPresso
+  echo ${RESPRESSOBIN} -h -s -t "cicn" -d resPresso "${outRsrc}"
+  ${RESPRESSOBIN} -h -s -t "cicn" -d resPresso "${outRsrc}"
+  for f in `ls resPresso/cicn/*.xpm`
+  do
+    convert ${f} ${f}.png
+  done
+}
+
+#extrICON
+#extrICNlb
+#extrics4
+#extrics8
+#extricl4
+#extricl8
+extrcicn
+
+# 1411  dd bs=1 skip=136 count=26 if=tmp57734/cicn_196.rsrc | convert -size 12x15 MONO:- t.png
+# 1412  imgls t.png
+# 1413  dd bs=1 skip=136 count=26 if=tmp57734/cicn_196.rsrc | xxd
+# 1414  lf tmp57734/cicn_*.rsrc
+# 1415* $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop
+# 1416  lslrt
+# 1417  find tmp76283/ -name '*Open*'
+# 1418* 
+# 1419  lf *De*
+# 1420  lf -d *Dez*
+# 1421  lf -d *Der*
+# 1422  lf do*
+# 1423  cat doDeRez
+# 1424  #DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -only "'cicn'" 
+# 1425  #DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -only "'cicn'" tmp57734/cicn_196.rsrc CarbonCore.r | head 
+# 1426  DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -only "'cicn'" tmp57734/cicn_196.rsrc CarbonCore.r | head 
+# 1427  man DeRez
+# 1428  DeRez -useDF -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -only "'cicn'" tmp57734/cicn_196.rsrc CarbonCore.r | head 
+# 1429  DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -only "'cicn'" $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop CarbonCore.r | head 
+# 1430  DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -only "'cicn'" $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop CarbonCore.r > cicn.r
+# 1431  view cicn.r
+# 1432  LC_ALL=c view cicn.r
+# 1433  find /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ -name '*.r' -exec grep -l cicn \{} \;
+# 1434  find /System/Library/Frameworks/CoreServices.framework/Frameworks/ -name '*.r' -exec grep -l cicn \{} \;
+# 1435  find /System/Library/Frameworks/ -name '*.r' -exec grep -l cicn \{} \;
+# 1436  view `find /System/Library/Frameworks/ -name '*.r' -exec grep -l cicn \{} \;`
+# 1437  find /System/Library/Frameworks/ -name '*.r' -exec grep -l PixMapHeight \{} \;
+# 1438  view `find /System/Library/Frameworks/ -name '*.r' -exec grep -l PixMapHeight \{} \;`
+# 1439  view `find /System/Library/Frameworks/ -name '*.r' -exec grep -l PixMapHeight \{} \;`
+# 1440* 
+# 1441  DeRez -I /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks -only "'cicn'" $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop Icons.r > cicn.r
+# 1442  lf /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks
+# 1443  lf /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/
+# 1444* DeRez -I /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/
+# 1445  DeRez -I /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/ -only "'cicn'" $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop Icons.r > cicn.r
+# 1446  view cicn.r
+# 1447  view /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/Icons.r
+# 1448  man DeRez
+# 1449  DeRez -Dcicn_RezTemplateVersion=0 -I /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/ -only "'cicn'" $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop Icons.r > cicn.r
+# 1450  DeRez -d cicn_RezTemplateVersion=0 -I /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/ -only "'cicn'" $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop Icons.r > cicn.r
+# 1451  view cicn.r
+# 1452  view cicn.r
+# 1453  lslrt
+# 1454  find tmp76283/ -name '*196*'
+# 1455  xxd tmp76283/cicn_196.rsrc | head
+# 1456  xxd tmp76283/cicn_196.rsrc
+# 1457  DeRez -d cicn_RezTemplateVersion=0 -I /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/ $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop Icons.r > all.r
+# 1458  view all.r
+# 1459  view -o /System/Library/Frameworks//ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Headers/Icons.r all.r
+# 1460  history | tail -50 >> extractResources

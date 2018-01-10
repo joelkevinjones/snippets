@@ -1,0 +1,13 @@
+# Example use:
+# ./doDeRez $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop 
+
+#/Developer/Tools/DeRez -I
+#       /System/Library/Frameworks/CoreServices.framework/Frameworks/
+#       CarbonCore.framework/Headers/ /System/Library/CFMSupport/CarbonLib
+#       CarbonCore.r
+DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ \
+  -only "'ICN#' (132)" \
+  "$1" CarbonCore.r
+
+# DeRez isn't what's needed:
+~/gitRepos/classic-mac-utils/extract_rsrc.pl < $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop/..namedfork/rsrc

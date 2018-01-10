@@ -1,0 +1,18 @@
+outFile=$1
+y=0; s=""
+sq="'"; dq='"'; lb='#'
+for c in `../printMacPalette 256`
+do
+  # want e.g. '#ffefab'
+  qRGB=${sq}${lb}${c}${sq}
+  s="${s} -fill ${qRGB} -draw ${sq}point 0,${y}${sq}"
+  ignore=$((y++))
+done
+# I hate this, but I can't figure out the quoting
+shellFile=t$$.sh
+echo magick -size 1x256 canvas:none "${s}" $outFile > ${shellFile}
+chmod u+x ${shellFile}
+# FIXME: add debug flag
+#cat ${shellFile}
+./${shellFile}
+rm ${shellFile}
