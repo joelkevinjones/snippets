@@ -1,0 +1,28 @@
+# Examples of Image Magick convert into PNG from: ICN#, ics#, ICON, icl4, ics4
+
+# ICN#
+xxd -e 'ICN#_1000.rsrc' | xxd -r - | convert -size 32x32 MONO:- 1000.png
+
+# ics#
+convert -size 16x16 MONO:'ics#_128.rsrc' '128_ics#.png'
+
+# ics# get mask
+dd skip=128 bs=1 count=128 if='ics#_128.rsrc' | convert -size 16x16 MONO:- '128_ics#.png'
+
+# ICON
+dd bs=1 count=128 if='ICON_128.rsrc' | xxd -e - | xxd -r - | convert -size 32x32 MONO:- '128_ICON.png'
+
+# icl4
+convert -size 32x32 -depth 4 GRAY:'icl4_128.rsrc' '128_icl4.png'
+
+# ics4
+# make an image that matches set 16 element Palette
+c++ -o ../printMac16Palette ../printMac16Palette.cpp
+../printMac16Palette 
+../drawColorMap16
+# produces the following on output; should execute it, but there is some
+# problem with quoting/word breaking problem where magick thinks that the 
+# first #ffffff is a file name
+magick -size 1x16 canvas:none -fill '#ffffff' -draw 'point 0,0' -fill '#fcf305' -draw 'point 0,1' -fill '#ff6402' -draw 'point 0,2' -fill '#dd0806' -draw 'point 0,3' -fill '#f20884' -draw 'point 0,4' -fill '#4600a5' -draw 'point 0,5' -fill '#0000d4' -draw 'point 0,6' -fill '#02abea' -draw 'point 0,7' -fill '#1fb714' -draw 'point 0,8' -fill '#006411' -draw 'point 0,9' -fill '#562c05' -draw 'point 0,10' -fill '#90713a' -draw 'point 0,11' -fill '#c0c0c0' -draw 'point 0,12' -fill '#808080' -draw 'point 0,13' -fill '#404040' -draw 'point 0,14' -fill '#000000' -draw 'point 0,15' onePoint.png
+# now do the conversion
+convert -size 16x16 -depth 4 GRAY:ics4_128.rsrc -interpolate Integer onePoint.png -clut ics4_128.png 

@@ -1,0 +1,21 @@
+# The goal is to convert the resources of the Palm Desktop application to
+# create javafx files, *.fxml, .css, and possibly *.java files.
+
+# ButtonBar: button bar consists of icl8 resources from Palm Desktop app and
+# background from chosen Decor.
+
+# Details:
+  New Address: 01010
+  Addresses:   01020
+  New To Do:   01050
+  To Do:       01060
+  New Memo:    01030
+  Memos:       01040
+  New Event:   01070
+  Go To:       01090
+  Today:       01100
+  Date Book:   01110
+  Print:       01120
+  Find:        01130
+  Delete:      01140 (but has trashcan, Sunstone capture had red circle bar
+  User:
