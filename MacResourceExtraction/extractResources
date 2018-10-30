@@ -2,8 +2,8 @@
 # modern, Java friendly, individual files.
 # Currently handles: ICON, ICN#, ics4, ics8, icl4, icl8
 
-# Palm Desktop uses the following, obrtained by running the following command
-# after running extract_rsrc.pl:
+# Palm Desktop has the following resource types, obrtained by running the
+# following command after running extract_rsrc.pl:
 # for f in tmp28930/*.rsrc; do   basename "${f}" | awk '{print substr($0,1,4)}'; done | sort | uniq -c | sort -n
 # BBLA BNDL CNTL CURS FMNU FREF ICN# ICON NAVT PICT POrg QUIL SICN SIZE STR#
 # TREC WDPS acur carb cfrg cicn icl4 icl8 icm# icm4 icm8 icns ics# ics4 ics8
@@ -70,17 +70,22 @@ function extrics8() {
   done
 }
 
+# Color icons using standard palette: http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/HIGuidelines/HIGuidelines-172.html
 function extricl4() {
   for f in `ls icl4*.rsrc`
   do
-      convert -size 32x32 -depth 4 GRAY:${f} -interpolate Integer clut16.png -clut results/${f}.png
+    # use imageMagick to convert 32x32x4bit index into Apple Icon Color Set
+    # Standard 256 color palette icl8 resource into results directory
+    convert -size 32x32 -depth 4 GRAY:${f} clut16.png -clut results/${f}.png
   done
 }
 
 function extricl8() {
   for f in `ls icl8*.rsrc`
   do
-    convert -size 32x32 -depth 8 GRAY:${f} -interpolate Integer clut256.png -clut results/${f}.png
+    # use imageMagick to convert 32x32x8bit index into Apple Icon Color Set
+    # Standard 256 color palette icl8 resource into results directory
+    convert -size 32x32 -depth 8 GRAY:${f} clut256.png -clut results/${f}.png
   done
 }
 
