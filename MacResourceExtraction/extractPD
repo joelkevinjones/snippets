@@ -1,0 +1,59 @@
+# Extract all resources from a Palm Desktop installation into modern file
+# formats.
+# classic-mac-utils/extract_rsrc.pl extracts resources into individual files, 
+#   ${name}_${id}.rsrc. The other files there convert 
+#   ICON, pat, pict, ppat -> png; snd -> wav; nfnt, FONT into a machine/human
+#   readable format; style -> decoded hash; clut -> decoded clut; STR -> string
+# ResCafe handles CURS, ICN#, ics#, icl4, ics4, icl8, ics8, ICON, MENU, PAT,
+#   SICN, STR, STR#, TEXT, cicn, icns
+# extractResources uses image magick (convert) to handle: ICON, ICN#, ics4,
+#   ics8, icl4, icl8, cicn (ResPresso) 
+
+prefix="Resources from "
+#~/gitRepos/classic-mac-utils/extract_rsrc.pl < "${rsrcFile}/..namedfork/rsrc" ||
+extractEXE="~/gitRepos/classic-mac-utils/extract_rsrc.pl"
+resPATH="..namedfork/rsrc"
+PDdir="${HOME}/PalmBackup"
+PDapp="${PDdir}/Application/Palm/Palm Desktop/Contents/MacOSClassic/Palm Desktop/${resPATH}"
+
+# XXX uses modified classic-mac-utils hacked to list resid restype
+resls() {
+  ~/gitRepos/classic-mac-utils/extract_rsrc.pl < "$1"
+}
+extractFile() {
+  local shortName fullPath
+  shortName="$1"
+  fullPath="$2"
+  for restype in `resls "${fullPath}" | sort -k2 -u | awk '{print $2}'`
+  do
+    printf -v newdir "%s\"%s\"/\'%-4s\'" "${prefix}" "${shortName}" "${restype}"
+    echo mkdir -p "${newdir}"
+    echo "(cd \\\"${newdir}\\\"; ${extractEXE} < \\\"${fullPath}\\\")"
+   done
+}
+
+# extract resources from application
+#extractFile "Palm Desktop" "${PDapp}"
+
+# extract resources from files in application contents
+extractDir() {
+  local dir
+  dir="$1"
+  ls "${dir}" | while read 
+  do
+    subdir="${REPLY}"
+    subdirName=`basename "${subdir}"`
+    extractFile "${subdirName}" "${dir}/${subdirName}/${resPATH}"
+  done
+}
+
+# Decors
+decorDir="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/English.lproj/Decors"
+#extractDir "${decorDir}"
+fontsDir="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/Fonts"
+#extractDir "${fontsDir}"
+
+# localized rsrc
+#extractFile "Palm Desktop" "${PDapp}"
+engLocalized="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/English.lproj/Localized.rsrc/${resPATH}"
+extractFile "Localized.rsrc" "${engLocalized}"

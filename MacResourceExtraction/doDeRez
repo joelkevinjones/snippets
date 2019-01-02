@@ -5,9 +5,10 @@
 #       /System/Library/Frameworks/CoreServices.framework/Frameworks/
 #       CarbonCore.framework/Headers/ /System/Library/CFMSupport/CarbonLib
 #       CarbonCore.r
-DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ \
-  -only "'ICN#' (132)" \
-  "$1" CarbonCore.r
+#DeRez -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/ \
+#  -only "'ICN#' (132)" \
+#  "$1" CarbonCore.r
+DeRez ~/PalmBackup/Application/Palm/Palm\ Desktop/Contents/Resources/English.lproj/Localized.rsrc  -only "'WIND'" /System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/MacWindows.r
 
 # DeRez isn't what's needed:
 ~/gitRepos/classic-mac-utils/extract_rsrc.pl < $HOME/PalmBackup/Application/Palm/Palm\ Desktop/Contents/MacOSClassic/Palm\ Desktop/..namedfork/rsrc

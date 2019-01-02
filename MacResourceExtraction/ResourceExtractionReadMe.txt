@@ -51,18 +51,20 @@ Resource Purpose and Format
   Mask bitmap (14), Icon's bitmap(14), Icon's data (4), Mask bitmap image data
   (variable), Icon's bitmap image data (variable), Icon's color table
   (variable), Pixel map image data (variable)
-'CNTL' describes ?. Contains rectangle in window local coordinates that
-  encloses control (4), initial setting for control (2), visible? (1), fill 0
-  (1), maximum setting (2), minimum setting (2), control definition ID (2),
-  reference value (2), title string (varies)
+'CNTL' describes control; referenced by DITL. Contains rectangle in window
+  local coordinates that encloses control (4), initial setting for control (2),
+  visible? (1), fill 0 (1), maximum setting (2), minimum setting (2), control
+  definition ID (2), reference value (2), title string (varies)
 'CNV3' PD specific, localization? "U.S.", "France", varying size
 'CURS' 16 x 16 black-and-white cursor Bits16 = ARRAY[0..15] of Integer, data
   Bits16, mask Bits16, hotSpot Point
-'dftb' PD specific, 37-1655 bytes long
+'dftb' Dialog Control Font Table, q.v. Dialogs.[rh]
 'DITL' List of items to be displayed in a dialog box. The items may be
   buttons, check boxes, static text, editable text, a control, icon, picture,
   user defined, help, etc.
-'dlgx' PD specific, 6 bytes, all 0000 0000 000b?
+'dlgx' Extended Dialog template: case versionZero 0 (2) long int q.v.
+  Dialogs.h, in Localized. 00099 (all): 0xb => use theme bkgd, use control
+  hier, use theme controls
 'DLOG' Specifies a dialog box. Has rectangle, window definition, flags, DITL
   ID, title, position
 'FLD ' PD specific, database field descriptions?, 88 bytes
@@ -121,7 +123,10 @@ Resource Purpose and Format
   the menu and menu items (4), title pstr, array of menu items (variable).
   Menu items contain: item text pstr, icon number/script/0 (1), keyboard
   equiv/0x1b,0x1c,0x1d,0x1e,p (1), marking character or menu id of submenu (1),
-  style (1) MTBE p. 3-152 (Localized)
+  style (1) MTBE p. 3-152 (Localized). Keyboard equivalents (from
+  https://en.wikipedia.org/wiki/Mac_OS_Roman) 0x11 Command key U+2313 PLACE
+  OF INTEREST, 0x12 shift U+21E7 UPWARDS RIGHT ARROW, 0x13 option U+2325
+  OPTION KEY, 0x14 control U+2303 UP ARROWHEAD (instead of caret).
 'mTbl' PD specific. Map from 2 byte sequence 0-23, 29-36, 4000, 4001, 4a00 
   -> 0
 'NAVT' PD specific, describes file types, begins POrg, 00200 "Open File Types"
