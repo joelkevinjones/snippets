@@ -32,9 +32,6 @@ extractFile() {
    done
 }
 
-# extract resources from application
-#extractFile "Palm Desktop" "${PDapp}"
-
 # extract resources from files in application contents
 extractDir() {
   local dir
@@ -47,13 +44,17 @@ extractDir() {
   done
 }
 
+# Application
+extractFile "Palm Desktop" "${PDapp}"
+
 # Decors
 decorDir="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/English.lproj/Decors"
-#extractDir "${decorDir}"
-fontsDir="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/Fonts"
-#extractDir "${fontsDir}"
+extractDir "${decorDir}"
 
-# localized rsrc
-#extractFile "Palm Desktop" "${PDapp}"
+# Fonts
+fontsDir="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/Fonts"
+extractDir "${fontsDir}"
+
+# English Localized rsrc
 engLocalized="${PDdir}/Application/Palm/Palm Desktop/Contents/Resources/English.lproj/Localized.rsrc/${resPATH}"
 extractFile "Localized.rsrc" "${engLocalized}"
