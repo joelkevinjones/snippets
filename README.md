@@ -30,7 +30,7 @@ The third task is to emulate the inter-linking abilities of PD by using
 Mac OS application URLs and AppleScript.
 This an interim solution to get some of the capablities until a complete
 replacement application is created.
-This is contained in AppleScript.
+This is contained in the separate repo COinJ_AppleScript.
 There are scripts to put into the pasteboard/copy buffer URLs for Calendar,
 Contacts, Evernote, Finder, Safari, and Mail.
 
